@@ -1,15 +1,16 @@
-import functions_framework
+#import functions_framework
 import sqlalchemy
 import pymysql
+import os
 from google.cloud import compute_v1
 from google.cloud.sql.connector import Connector
 
 PROJECT_ID = "ppetrov-internal-402521"
 CONNECTION_NAME = "{}:us-east1:ex-zh-part2".format(PROJECT_ID)
-DB_NAME = "network"
-DB_USER = "769a5d3c1da1"
-DB_PASS = "cf8fd7a5a7fa"
-TABLE_NAME = "vpc_subnets"
+DB_NAME = os.environ.get("DB_NAME", "default")
+DB_USER = os.environ.get("DB_USER", "randomuser")
+DB_PASS = os.environ.get("DB_PASS", "randompass")
+TABLE_NAME = os.environ.get("TABLE_NAME", "randomtable")
 
 
 def init_connection_pool(connector: Connector) -> sqlalchemy.engine.Engine:
@@ -78,11 +79,10 @@ def delete(network, ips):
     """.format(net_val=network, ips=ips)
 
     print(sql_stmt)
-
     return sql_exec(sql_stmt)
 
 
-@functions_framework.http
+#@functions_framework.http
 def run(request):
 
     vpc_ips = {}
